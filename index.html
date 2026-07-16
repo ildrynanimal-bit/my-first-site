@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RJ's Bin Cleaning</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --secondary: #28a745;
+            --dark: #333;
+            --light: #f8f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: white;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Before/After Slider Container */
+        .slider-section {
+            margin-bottom: 40px;
+        }
+
+        .slider-section h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .image-slider {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            user-select: none;
+        }
+
+        .image-slider img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .image-before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .image-after {
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+        }
+
+        .slider-bar {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background-color: white;
+            cursor: ew-resize;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .slider-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            pointer-events: none;
+            z-index: 11;
+        }
+
+        .slider-button::before,
+        .slider-button::after {
+            content: '';
+            border: solid var(--primary);
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+
+        .slider-button::before {
+            transform: rotate(135deg);
+            margin-right: 3px;
+        }
+
+        .slider-button::after {
+            transform: rotate(-45deg);
+            margin-left: 3px;
+        }
+
+        .label {
+            position: absolute;
+            bottom: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 5;
+            text-transform: uppercase;
+        }
+
+        .label-before {
+            left: 15px;
+        }
+
+        .label-after {
+            right: 15px;
+        }
+
+        /* Buttons Section */
+        .pricing-section {
+            margin-bottom: 40px;
+        }
+
+        .pricing-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 600px) {
+            .pricing-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .pricing-btn {
+            background-color: white;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .pricing-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.2);
+            border-color: var(--secondary);
+        }
+
+        .pricing-btn h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .pricing-btn .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .pricing-btn .details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* FAQ Accordion */
+        .faq-section {
+            margin-bottom: 40px;
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 15px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            user-select: none;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: transform 0.2s ease;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #fafafa;
+        }
+
+        .faq-answer p {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            color: #555;
+        }
+
+        /* Facebook Footer Area */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 4px solid var(--primary);
+        }
+
+        .fb-container {
+            margin-bottom: 15px;
+        }
+
+        .fb-link {
+            display: inline-flex;
+            align-items: center;
+            background-color: #1877f2;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .fb-link:hover {
+            background-color: #166fe5;
+        }
+
+        .fb-link svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+            margin-right: 10px;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>RJ's Bin Cleaning</h1>
+        <p>Professional Trash Can Sanitizing & Deodorizing</p>
+    </header>
+
+    <div class="container">
+
+        <!-- Before/After Slider Section -->
+        <section class="slider-section">
+            <h2>See the Difference</h2>
+            <div class="image-slider" id="slider">
+                <!-- Replace 'before.jpg' and 'after.jpg' with your actual image paths -->
+                <img src="after.jpg" alt="After cleaning" class="image-before">
+                <div class="image-after" id="after-img">
+                    <img src="before.jpg" alt="Before cleaning">
+                </div>
+                <div class="label label-before">Clean</div>
+                <div class="label label-after">Dirty</div>
+                <div class="slider-bar" id="slider-bar">
+                    <div class="slider-button"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing / Action Buttons -->
+        <section class="pricing-section">
+            <h2>Select Your Plan</h2>
+            <div class="pricing-grid">
+                <!-- Button 1 -->
+                <a href="#" class="pricing-btn" onclick="demoRedirect(event, 'Monthly Service')">
+                    <div>
+                        <h3>Monthly</h3>
+                        <div class="price">$15 <span style="font-size: 1rem; font-weight: normal;">/ can</span></div>
+                    </div>
+                    <div class="details">+$10 each additional can per house</div>
+                </a>
+
+                <!-- Button 2 -->
+                <a href="#" class="pricing-btn" onclick="demoRedirect(event, 'Bi-Monthly Service')">
+                    <div>
+                        <h3>Bi-Monthly</h3>
+                        <div class="price">$25 <span style="font-size: 1rem; font-weight: normal;">/ can</span></div>
+                    </div>
+                    <div class="details">+$10 each additional can per house</div>
+                </a>
+
+                <!-- Button 3 -->
+                <a href="#" class="pricing-btn" onclick="demoRedirect(event, 'Quarterly Service')">
+                    <div>
+                        <h3>Quarterly</h3>
+                        <div class="price">$35 <span style="font-size: 1rem; font-weight: normal;">/ can</span></div>
+                    </div>
+                    <div class="details">+$10 each additional can per house</div>
+                </a>
+
+                <!-- Button 4 -->
+                <a href="#" class="pricing-btn" onclick="demoRedirect(event, 'One-Time Clean')">
+                    <div>
+                        <h3>One-Time Clean</h3>
+                        <div class="price">$45 <span style="font-size: 1rem; font-weight: normal;">/ can</span></div>
+                    </div>
+                    <div class="details">Single cleaning event</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">How does the cleaning process work?</div>
+                <div class="faq-answer">
+                    <p>We bring our specialized mobile cleaning truck right to your curb. Using ultra-high pressure water heated to over 200 degrees, we sanitize, deodorize, and wash away 99.9% of bacteria and grime inside and outside of your bins without using harsh chemicals.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">When do you clean my bins?</div>
+                <div class="faq-answer">
+                    <p>We schedule your cleaning on the same day as your trash pickup day, or the day following, once your bins have been emptied by the local waste disposal service.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How do I sign up for additional cans?</div>
+                <div class="faq-answer">
+                    <p>When finalizing your plan, you can specify exactly how many waste, recycling, or yard debris bins you need cleaned. Additional cans are serviced at our discounted add-on rate.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <div class="fb-container">
+            <!-- Replace the href with your actual Facebook page link -->
+            <a href="https://facebook.com" target="_blank" class="fb-link">
+                <svg viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                Find Us On Facebook
+            </a>
+        </div>
+        <p>&copy; 2026 RJ's Bin Cleaning. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Before/After Slider Functionality
+        const slider = document.getElementById('slider');
+        const afterImg = document.getElementById('after-img');
+        const sliderBar = document.getElementById('slider-bar');
+
+        function moveSlider(x) {
+            const rect = slider.getBoundingClientRect();
+            let position = ((x - rect.left) / rect.width) * 100;
+            
+            if (position < 0) position = 0;
+            if (position > 100) position = 100;
+
+            afterImg.style.clipPath = `polygon(0 0, ${position}% 0, ${position}% 100%, 0 100%)`;
+            sliderBar.style.left = `${position}%`;
+        }
+
+        // Mouse Events
+        slider.addEventListener('mousemove', (e) => {
+            moveSlider(e.clientX);
+        });
+
+        // Touch Events for Mobile
+        slider.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                moveSlider(e.touches[0].clientX);
+            }
+        });
+
+        // FAQ Expandable Accordion Functionality
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            const answer = item.querySelector('.faq-answer');
+
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other open FAQ items
+                faqItems.forEach(otherItem => {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.faq-answer').style.maxHeight = null;
+                });
+
+                if (!isActive) {
+                    item.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + "px";
+                }
+            });
+        });
+
+        // Placeholder Jobber redirect function for Demo purposes
+        function demoRedirect(event, planName) {
+            event.preventDefault();
+            alert(`Demo Mode: This button will connect to your Jobber portal for the "${planName}" package in the live version.`);
+        }
+    </script>
+</body>
+</html>
